@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <section class="home" id="home">
+        <h1>Vincent Parrot</h1>
+        <p>Fort de ses 15 années d'expérience dans la réparation automobile, Vincent Parrot à ouvert son propre garage à Toulouse en 2021.</p>
+        <a href="{% url 'admin:index' %}" class="btn">Espace Collaborateurs</a>
+    </section>
+
+
+    <section class="about" id="about">
+            <div class="box-container">
+                <div class="box">
+                    <h1 class="heading">Notre garage</h1>
+                    <p>Vincent Parrot c’est aussi une histoire de passion pour la mécanique et toutes marques de véhicules. <br> Depuis 2008, Vincent Parrot n’a cessé de grandir et d’évoluer. <br> Aujourd’hui, nous sommes fiers de pouvoir vous offrir des prestations de qualité en matière de carrosserie, de pneumatiques, d’estimation et bien d’autres services. <br> Tout cela sans jamais oublier la relation client.</p>
+                </div>
+                <div class="box">
+                    <div class="image">
+                        <img src="media/images/mecanicien.jpg" alt="">
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    <section class="services" id="services">
+        <h1 class="heading">Nos services</h1>
+        <div class="box-container">
+{% for service in services %}
+            <div class="box">
+            <h3>{{ service.name }}</h3>
+            <p>{{ service.description }}</p>
+            </div>
+{% endfor %}
+        </div>
+    </section>
+
+    <section id="cars">
+        <h1 class="heading">Véhicules</h1>
+        <div class="images">
+            <ul>
+{% for car in cars %}
+                <li class="car">
+                    <div>
+                        <img src="{{ car.thumbnail.url }}" alt="">
+                </div>
+                    <span>{{ car.name }}</span>
+                    <font size="2px">{{ car.speed|floatformat:"-0"|slice:":2" }} {{ car.speed|floatformat:"-0"|slice:"2:" }} KM | {{ car.essence }} </font>
+                    <span class="prix" id="price">{{ car.price|floatformat:"-0"|slice:":2" }} {{ car.price|floatformat:"-0"|slice:"2:" }}  €</span>
+
+                    <a href="{{ car.get_absolute_url }}">Voir</a>
+                </li>
+{% endfor %}
+            </ul>
+        </div>
+        <a href="{% url 'vehicules' %}" class="btn_cars">Voir plus</a>
+    </section>
+
+<section class="contact" id="contact">
+        <div class="box-container">
+{% for coordinate in coordinates %}
+            <div class="box">
+                <h3>Adresse</h3>
+                <p>{{ coordinate.adress }}</p>
+                <h3>Email</h3>
+                <p>{{ coordinate.email }}</p>
+                <h3>Téléphone</h3>
+                <p>{{ coordinate.phone}}</p>
+            </div>
+{% endfor %}
+<form class="" method="post">
+    <div class="inputBox">
+        {% csrf_token %}
+        <input type="text" name="name" placeholder="Nom" pattern="[A-Za-zÀ-ÿ '-]{1,50}" title="Veuillez entrer un nom valide" required />
+        <input type="text" name="lastname" placeholder="Prénom" pattern="[A-Za-zÀ-ÿ '-]{1,50}" title="Veuillez entrer un prénom valide " required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="tel" name="phone" placeholder="Tel" pattern="[0-9]{10}" title="Veuillez entrer un numéro de téléphone valide (10 chiffres)" required />
+        <textarea name="message" placeholder="Message" id="" cols="30" rows="10"></textarea>
+    </div>
+    <input type="submit" value="Envoyer" class="btn" />
+</form>
+
+        </div>
+        </div>
+    </section>
+{% endblock %}

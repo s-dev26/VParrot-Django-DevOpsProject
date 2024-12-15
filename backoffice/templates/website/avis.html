@@ -1,0 +1,55 @@
+{% extends 'base2.html' %}
+{% block content %}
+
+<section>
+    <h1 class="heading">Avis</h1>
+        <div class="container_viewer">
+        <div class="wrapper">
+        <i id="left" class="fa-solid fa-angle-left"></i>
+        <ul class="carousel">
+{% for review in reviews %}
+            <li class="card">
+                <div class="img"><img src="media/images/avatar.png" alt="img" draggable="false"></div>
+                    <h2>{{review.author}}</h2>
+                    {% for _ in review.get_stars %}<span class="star">★</span>{% endfor %}
+                    <span class="span_review">{{review.content}}</span>
+            </li>
+{% endfor %}
+            </ul>
+            <i id="right" class="fa-solid fa-angle-right"></i>
+        </div>
+</section>
+
+{% if new_review %}
+<center><h3>Votre avis a bien été ajouté</h3></center>
+{% else %}
+    <section id="review-form">
+        <div id="feedback-form">
+            <div>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="author" placeholder="Votre prénom" pattern="[A-Za-zÀ-ÿ '-]{1,50}" title="Veuillez entrer un prénom valide" required />
+                    <div class="rating">
+                        <input type="radio" id="star1" name="rating" value="1" class="star-input" style="display: none;" />
+                        <label for="star1" class="star-label">★</label>
+                        <input type="radio" id="star2" name="rating" value="2" class="star-input" style="display: none;" />
+                        <label for="star2" class="star-label">★</label>
+                        <input type="radio" id="star3" name="rating" value="3" class="star-input" style="display: none;" />
+                        <label for="star3" class="star-label">★</label>
+                        <input type="radio" id="star4" name="rating" value="4" class="star-input" style="display: none;" />
+                        <label for="star4" class="star-label">★</label>
+                        <input type="radio" id="star5" name="rating" value="5" class="star-input" style="display: none;" />
+                        <label for="star5" class="star-label">★</label>
+                    </div>
+                    <textarea class="message_container" name="content" placeholder="Votre avis" required></textarea>
+                    <button type="submit">Laisser un avis</button>
+                </form>
+                
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base2.html' %}
+
+{% block content %}
+
+<section class="cars_section">
+    <div class="box-container">
+        <div class="box">
+            <div class="image">
+                <img src="{{car.thumbnail.url}}" alt="">
+            </div>
+        </div>
+            <div class="box">
+                <div class="box_titles">
+                <h1 class="car_name">{{car.name}}</h1>
+                <span class="car_speed">{{ car.speed|floatformat:"-0"|slice:":2" }} {{ car.speed|floatformat:"-0"|slice:"2:" }} KM | {{ car.essence }} | {{ car.year }}</span> <br>
+                <span class="car_price">{{ car.price|floatformat:"-0"|slice:":2" }} {{ car.price|floatformat:"-0"|slice:"2:" }}  €</span>
+                <center> <button onclick="window.location.href = '#car_form';" class="btn_message"  type="button"> ✉️ Message</button></center>
+            </div>
+
+            <div class="box_description">
+                <h2 class="description_title">Description :</h2>
+                <p class="car_description">{{car.description}}</p>
+            </div>
+                </div>
+        </div>
+</section>
+
+    <section id="car_form">
+        <div id="feedback-form">
+            <div>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="name" placeholder="Nom" pattern="[A-Za-zÀ-ÿ '-]{1,50}" title="Veuillez entrer un nom valide" required />
+                    <input type="text" name="lastname" placeholder="Prénom" pattern="[A-Za-zÀ-ÿ '-]{1,50}" title="Veuillez entrer un prénom valide" required />
+                    <input type="text" value="{{car.name}}" name="title" required />
+                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="tel" name="phone" placeholder="Tel" pattern="[0-9]{10}" title="Veuillez entrer un numéro de téléphone valide (10 chiffres)" required />
+                    <textarea class="message_container" name="message" placeholder="Message" required></textarea>
+                    <button type="submit">Envoyer</button>
+                </form>
+                
+            </div>
+        </div>
+</section>
+{% endblock %}

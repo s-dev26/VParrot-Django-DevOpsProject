@@ -1,0 +1,47 @@
+{% extends 'base2.html' %}
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<section id="filters_section">
+    <form method="POST" action="" id="filters_form">
+        {% csrf_token %}
+        <font size="4px"><center><label>Prix</label></font>
+    <label>Min</label>
+        <input type="number" name="price_min" id="price_min" pattern="\d+(\.\d{1,2})?" title="Veuillez entrer un nombre positif (avec jusqu'à 2 décimales)" >
+        <label>Max</label>
+        <input type="number" name="price_max" id="price_max" pattern="\d+(\.\d{1,2})?" title="Veuillez entrer un nombre positif (avec jusqu'à 2 décimales)" >
+        <font size="4px"><label>Km</label></font>
+        <label>Min</label>
+        <input type="number" name="speed_min" id="speed_min" pattern="\d+" title="Veuillez entrer un nombre entier positif">
+        <label>Max</label>
+        <input type="number" name="speed_max" id="speed_max" pattern="\d+" title="Veuillez entrer un nombre entier positif">
+        <font size="4px"><label>Année</label></font>
+        <label>Min</label>
+        <input type="number" name="year_min" id="year_min" pattern="\d{4}" title="Veuillez entrer une année valide (au format AAAA)">
+        <label>Max</label>
+        <input type="number" name="year_max" id="year_max" pattern="\d{4}" title="Veuillez entrer une année valide (au format AAAA)"></center><br>
+        <br><center><input type="submit" class="btn-filters" value="Filtrer"></center>
+    </form>
+</section>
+
+<section id="cars">
+    <h1 class="heading">Véhicules</h1>
+    <div class="images">
+    <ul>
+        {% for car in cars %}
+        <li class="car">
+            <div>
+            <img src="{{ car.thumbnail.url }}" alt="">
+            </div>
+            <span>{{ car.name }}</span>
+            <font size="2px">{{ car.speed|floatformat:"-0"|slice:":2" }} {{ car.speed|floatformat:"-0"|slice:"2:" }} KM  | {{ car.essence }} </font>
+            <span class="prix" id="price">{{ car.price|floatformat:"-0"|slice:":2" }} {{ car.price|floatformat:"-0"|slice:"2:" }}  €</span>
+            <a href="{{ car.get_absolute_url }}">Voir</a>
+        </li>
+        {% endfor %}
+    </ul>
+    </div>
+</section>
+{% endblock %}
