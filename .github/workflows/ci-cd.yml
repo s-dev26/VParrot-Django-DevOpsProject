@@ -38,5 +38,5 @@ jobs:
             docker stop django-container || true &&
             docker rm django-container || true &&
             docker run -d --name django-container -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest
-        "
+             "
 
