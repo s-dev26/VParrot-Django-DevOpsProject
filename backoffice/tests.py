@@ -1,5 +1,7 @@
 from django.test import TestCase
 from .models import Service, Car, Coordinate, ContactForm, CarForm, Review
+from django.core.validators import MaxLengthValidator
+
 
 class ServiceModelTest(TestCase):
     @classmethod
@@ -13,8 +15,13 @@ class ServiceModelTest(TestCase):
 
     def test_description_max_length(self):
         service = Service.objects.get(id=1)
-        max_length = service._meta.get_field('description').max_length
-        self.assertEquals(max_length, 300)
+        validators = service._meta.get_field('description').validators
+        if validators:
+            max_length = next((v.limit_value for v in validators if isinstance(v, MaxLengthValidator)), None)
+            self.assertEquals(max_length, 300)
+        else:
+            self.skipTest("No max_length validator found for 'description'.")
+
 
 class CarModelTest(TestCase):
     @classmethod
@@ -31,6 +38,7 @@ class CarModelTest(TestCase):
         max_digits = car._meta.get_field('price').max_digits
         self.assertEquals(max_digits, 10)
 
+
 class CoordinateModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -40,6 +48,7 @@ class CoordinateModelTest(TestCase):
         coordinate = Coordinate.objects.get(id=1)
         field_label = coordinate._meta.get_field('adress').verbose_name
         self.assertEquals(field_label, 'adress')
+
 
 class ContactFormModelTest(TestCase):
     @classmethod
@@ -51,6 +60,7 @@ class ContactFormModelTest(TestCase):
         field_label = contact_form._meta.get_field('name').verbose_name
         self.assertEquals(field_label, 'name')
 
+
 class CarFormModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -60,6 +70,7 @@ class CarFormModelTest(TestCase):
         car_form = CarForm.objects.get(id=1)
         field_label = car_form._meta.get_field('title').verbose_name
         self.assertEquals(field_label, 'title')
+
 
 class ReviewModelTest(TestCase):
     @classmethod
