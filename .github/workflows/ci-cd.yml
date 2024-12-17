@@ -33,7 +33,7 @@ jobs:
           
       - name: Deploy to EC2
         run: |
-            ssh -i  ".github/workflows/CICDInstance.pem" ec2-user@44.211.213.182"
+            ssh -i  ".github/workflows/CICDInstance.pem" ec2-user@44.211.213.182
             docker pull ${{ secrets.DOCKER_USERNAME }}/django-app:latest &&
             docker stop django-container || true &&
             docker rm django-container || true &&
