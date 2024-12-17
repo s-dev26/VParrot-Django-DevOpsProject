@@ -33,13 +33,14 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          echo "${{ secrets.EC2_PRIVATE_KEY }}" > /tmp/ci_key.pem
-          chmod 600 /tmp/ci_key.pem
-          ssh -o StrictHostKeyChecking=no -i /tmp/ci_key.pem ec2-user@44.211.213.182 << 'EOF'
-      
-          docker pull ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest &&
-          docker stop django-container || true &&
-          docker rm django-container || true &&
-          docker run -d --name django-container -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest
+         printf "%s" "${{ secrets.EC2_PRIVATE_KEY }}" > /tmp/ci_key.pem
+         chmod 600 /tmp/ci_key.pem
+         ssh -o StrictHostKeyChecking=no -i /tmp/ci_key.pem ec2-user@<EC2_IP> << 'EOF'
+         docker pull ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest
+         docker ps --filter "name=django-container" --quiet | xargs -r docker stop || true
+         docker ps --filter "name=django-container" --quiet | xargs -r docker rm || true
+         docker run -d --name django-container -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest
+         EOF
+         rm -f /tmp/ci_key.pem
           "
 
