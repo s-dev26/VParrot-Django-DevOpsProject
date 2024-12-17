@@ -31,12 +31,12 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest
           
-        - name: Deploy to EC2
+      - name: Deploy to EC2
         run: |
-        ssh -o StrictHostKeyChecking=no -i <(echo ${{ secrets.EC2_PRIVATE_KEY }}) ec2-user@44.211.213.182"
-        docker pull ${{ secrets.DOCKER_USERNAME }}/django-app:latest &&
-        docker stop django-container || true &&
-        docker rm django-container || true &&
-        docker run -d --name django-container -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest
+            ssh -o StrictHostKeyChecking=no -i <(echo ${{ secrets.EC2_PRIVATE_KEY }}) ec2-user@44.211.213.182"
+            docker pull ${{ secrets.DOCKER_USERNAME }}/django-app:latest &&
+            docker stop django-container || true &&
+            docker rm django-container || true &&
+            docker run -d --name django-container -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest
         "
 
