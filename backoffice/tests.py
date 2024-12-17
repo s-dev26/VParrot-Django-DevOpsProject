@@ -1,7 +1,5 @@
 from django.test import TestCase
-from .models import Service, Car, Coordinate, ContactForm, CarForm, Review
-from django.core.validators import MaxLengthValidator
-
+from .models import *
 
 class ServiceModelTest(TestCase):
     @classmethod
@@ -15,13 +13,12 @@ class ServiceModelTest(TestCase):
 
     def test_description_max_length(self):
         service = Service.objects.get(id=1)
-        validators = service._meta.get_field('description').validators
-        if validators:
-            max_length = next((v.limit_value for v in validators if isinstance(v, MaxLengthValidator)), None)
-            self.assertEquals(max_length, 300)
-        else:
-            self.skipTest("No max_length validator found for 'description'.")
+        max_length = service._meta.get_field('description').max_length
+        self.assertEquals(max_length, 300)
 
+    def test_str_method(self):
+        service = Service.objects.get(id=1)
+        self.assertEquals(str(service), service.name)
 
 class CarModelTest(TestCase):
     @classmethod
@@ -38,6 +35,14 @@ class CarModelTest(TestCase):
         max_digits = car._meta.get_field('price').max_digits
         self.assertEquals(max_digits, 10)
 
+    def test_str_method(self):
+        car = Car.objects.get(id=1)
+        self.assertEquals(str(car), car.name)
+
+    def test_get_absolute_url(self):
+        car = Car.objects.get(id=1)
+        self.assertEquals(car.get_absolute_url(), f"/vehicule/{car.slug}/")
+
 
 class CoordinateModelTest(TestCase):
     @classmethod
@@ -49,6 +54,9 @@ class CoordinateModelTest(TestCase):
         field_label = coordinate._meta.get_field('adress').verbose_name
         self.assertEquals(field_label, 'adress')
 
+    def test_str_method(self):
+        coordinate = Coordinate.objects.get(id=1)
+        self.assertEquals(str(coordinate), coordinate.adress)
 
 class ContactFormModelTest(TestCase):
     @classmethod
@@ -59,6 +67,10 @@ class ContactFormModelTest(TestCase):
         contact_form = ContactForm.objects.get(id=1)
         field_label = contact_form._meta.get_field('name').verbose_name
         self.assertEquals(field_label, 'name')
+
+    def test_str_method(self):
+        contact_form = ContactForm.objects.get(id=1)
+        self.assertEquals(str(contact_form), contact_form.name)
 
 
 class CarFormModelTest(TestCase):
@@ -71,6 +83,10 @@ class CarFormModelTest(TestCase):
         field_label = car_form._meta.get_field('title').verbose_name
         self.assertEquals(field_label, 'title')
 
+    def test_str_method(self):
+        car_form = CarForm.objects.get(id=1)
+        self.assertEquals(str(car_form), car_form.title)
+
 
 class ReviewModelTest(TestCase):
     @classmethod
@@ -81,3 +97,11 @@ class ReviewModelTest(TestCase):
         review = Review.objects.get(id=1)
         field_label = review._meta.get_field('author').verbose_name
         self.assertEquals(field_label, 'author')
+
+    def test_str_method(self):
+        review = Review.objects.get(id=1)
+        self.assertEquals(str(review), review.author)
+
+    def test_get_stars_method(self):
+        review = Review.objects.get(id=1)
+        self.assertEqual(list(review.get_stars()), [1, 2, 3, 4, 5])
