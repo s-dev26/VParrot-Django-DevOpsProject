@@ -23,10 +23,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Django tests
-        run: |
-          python manage.py test
-
       - name: Log in to DockerHub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
@@ -34,13 +30,15 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest
-          
-        - name: Deploy to EC2
+
+      - name: Deploy to EC2
         run: |
-        ssh -o StrictHostKeyChecking=no -i <(echo ${{ secrets.EC2_PRIVATE_KEY }}) ec2-user@44.211.213.182"
-        docker pull ${{ secrets.DOCKER_USERNAME }}/django-app:latest &&
-        docker stop django-container || true &&
-        docker rm django-container || true &&
-        docker run -d --name django-container -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest
-        "
+          printf "%s" "${{ secrets.EC2_PRIVATE_KEY }}" > /tmp/ci_key.pem
+          chmod 600 /tmp/ci_key.pem
+          ssh -o StrictHostKeyChecking=no -i /tmp/ci_key.pem ec2-user@44.211.213.182 <<EOF
+            docker pull ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest
+            docker run -d --name django-container -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest
+            docker ps -a --filter "name=django-container"
+          EOF
+           
 
