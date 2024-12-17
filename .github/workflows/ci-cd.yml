@@ -28,16 +28,16 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django-python:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django-python:latest
 
       - name: Deploy to EC2
         run: |
           printf "%s" "${{ secrets.EC2_PRIVATE_KEY }}" > /tmp/ci_key.pem
           chmod 600 /tmp/ci_key.pem
           ssh -o StrictHostKeyChecking=no -i /tmp/ci_key.pem ec2-user@44.211.213.182 <<EOF
-            docker pull ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest
-            docker run -d --name django-container -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django-python:latest
+            docker run -d --name django-container -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/vparrot-garage-django-python:latest
             docker ps -a --filter "name=django-container"
           EOF
            
